@@ -16,7 +16,7 @@ export function addAPIRoutes(app: Express) {
       const result = await queryDatabase('SELECT id, name FROM category');
       res.json(result);
     } catch (error) {
-      console.error('Error while getting items', error);
+      console.error('Error while getting categories', error);
       res.status(500).json({ error: 'Internal server error' });
     }
   });
@@ -25,10 +25,33 @@ export function addAPIRoutes(app: Express) {
 	apiRouter.get('/subcategory', async(req: Request, res: Response) => {
     try {
       const categoryId = req.query?.categoryId;
-      const result = await queryDatabase('SELECT id, name FROM subcategory' + (categoryId ? ' WHERE category_id = ' + categoryId : ''));
+      const condition: string = categoryId ? ' WHERE category_id = ' + categoryId : '';
+
+      const result = await queryDatabase('SELECT id, name FROM subcategory' + condition);
       res.json(result);
     } catch (error) {
-      console.error('Error while getting items', error);
+      console.error('Error while getting subcategories', error);
+      res.status(500).json({ error: 'Internal server error' });
+    }
+  });
+
+  console.log('📨  Adding GET quiz route...');
+	apiRouter.get('/quiz', async(req: Request, res: Response) => {
+    try {
+      const categoryId = req.query?.categoryId;
+      const condition: string = categoryId ? ' WHERE category_id = ' + categoryId : '';
+
+      let numberOfReturns = req.query?.numberOfReturns;
+
+      if (typeof numberOfReturns !== 'string' || isNaN(parseInt(numberOfReturns)))
+        numberOfReturns = '1';
+
+      const limit: string =  ' LIMIT ' + numberOfReturns;
+
+      const result = await queryDatabase('SELECT id, name FROM quiz' + condition + ' ORDER BY RANDOM()' + limit);
+      res.json(result);
+    } catch (error) {
+      console.error('Error while getting quizzes', error);
       res.status(500).json({ error: 'Internal server error' });
     }
   });
