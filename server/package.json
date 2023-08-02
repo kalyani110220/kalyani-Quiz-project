@@ -5,7 +5,7 @@
 	"main": "index.js",
 	"scripts": {
 		"test": "",
-		"start": "nodemon index.ts --no-warnings"
+		"start-be": "nodemon index.ts --no-warnings"
 	},
 	"author": "",
 	"license": "ISC",
