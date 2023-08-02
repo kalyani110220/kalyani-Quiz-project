@@ -21,6 +21,18 @@ export function addAPIRoutes(app: Express) {
     }
   });
 
+  console.log('📨  Adding GET subcategory route...');
+	apiRouter.get('/subcategory', async(req: Request, res: Response) => {
+    try {
+      const categoryId = req.query?.categoryId;
+      const result = await queryDatabase('SELECT id, name FROM subcategory' + (categoryId ? ' WHERE category_id = ' + categoryId : ''));
+      res.json(result);
+    } catch (error) {
+      console.error('Error while getting items', error);
+      res.status(500).json({ error: 'Internal server error' });
+    }
+  });
+
 	console.log('🛠️  Applying API router to Express server...');
 	app.use('/api', apiRouter);
 }
