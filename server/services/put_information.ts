@@ -4,11 +4,15 @@ import { QueryParams } from "../helpers/check";
 export async function putAnswer (roundId: QueryParams, questionNumber: QueryParams, correct: QueryParams) {
   const correctQuery = correct === 'true' ? ', correct = correct + 1' : '';
 
-  const roundInfo = await queryDatabase(`UPDATE round SET answered = ${questionNumber}${correctQuery} WHERE round.id = ${roundId} returning quiz_id`);
+  const roundInfo = await queryDatabase(`UPDATE round SET answered = ${questionNumber}${correctQuery} WHERE round.id = ${roundId} returning quiz_id as "quizId"`);
 
-  const { quiz_id } = roundInfo[0];
+  if (!roundInfo.length) throw new Error(`Round ${roundId} not found`);
 
-  const countInfo = await queryDatabase(`select COUNT(*) as "numberOfQuestions" from quiz_question_relation where quiz_id = ${quiz_id}`)
+  const { quizId } = roundInfo[0];
+
+  const countInfo = await queryDatabase(`select COUNT(*) as "numberOfQuestions" from quiz_question_relation where quiz_id = ${quizId}`)
+
+  if (!countInfo.length) throw new Error(`Quiz ${quizId} not found`);
 
   const { numberOfQuestions } = countInfo[0];
 
