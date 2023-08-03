@@ -28,24 +28,24 @@ export async function getQuestion (quizId: QueryParams, questionNumber: QueryPar
   if (!isNumberString(quizId)) throw new Error('Must contain quizId and it must be a number');
   if (!isNumberString(questionNumber)) throw new Error('Must contain questionNumber and it must be a number');
 
-  const questionAnswerQuery = `SELECT qu.id AS "questionId", qu.text AS question, a.id AS "answerId", a.text AS 
-                                answer FROM quiz_question_relation AS qqr JOIN question AS qu ON qqr.question_id
-                                = qu.id JOIN answer AS a ON qu.answer_id = a.id WHERE qqr.quiz_id = ${quizId} AND 
-                                qqr.question_number = ${questionNumber}`;
+  const questionAnswerQuery = `SELECT qu.id AS id, qu.text AS "questionText", a.id AS "answerId", a.text AS 
+                                answer, qqr.multiple_choice as "multipleChoice" FROM quiz_question_relation AS qqr 
+                                JOIN question AS qu ON qqr.question_id = qu.id JOIN answer AS a ON qu.answer_id = a.id 
+                                WHERE qqr.quiz_id = ${quizId} AND qqr.question_number = ${questionNumber}`;
 
   const questionAnswerInfo = await queryDatabase(questionAnswerQuery);
 
   if (questionAnswerInfo.length === 0) throw new Error('This question does not exist');
 
-  const info = questionAnswerInfo[0];
+  const { questionText, id, answerId, answer, multipleChoice } = questionAnswerInfo[0];
 
-  const answers = await getAllAnswers(info.questionId, info.answerId, info.answer);
+  const answers = multipleChoice ? await getAllAnswers(id, answerId, answer) : [{answerId, answer, correct: true}];
 
   return [
     {
-      id: info.questionId,
-      questionText: info.question,
-      multipleChoice: true,
+      id,
+      questionText,
+      multipleChoice,
       answers
     }
   ];
