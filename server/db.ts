@@ -12,10 +12,11 @@ const pool = new Pool({
   port: parseInt(process.env.DB_PORT ?? '5432')
 });
 
-export async function queryDatabase(queryText: string, params: any[] = []) {
+export async function queryDatabase(queryText: string) {
+  console.log('SQL query: ', queryText);
   try {
     const client = await pool.connect();
-    const result = await client.query(queryText, params);
+    const result = await client.query(queryText);
     client.release();
     return result.rows;
   } catch (error) {
