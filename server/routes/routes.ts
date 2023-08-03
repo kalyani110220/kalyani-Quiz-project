@@ -1,6 +1,7 @@
 import express, { Express, Request, Response } from "express";
 import { getCategory, getQuestion, getQuiz, getSubcategory } from "../services/get_information";
 import { postStart } from "../services/post_information";
+import { putAnswer } from "../services/put_information";
 
 export function addAPIRoutes(app: Express) {
 	console.log('🛠️  Creating API router...');
@@ -65,6 +66,20 @@ export function addAPIRoutes(app: Express) {
     try {
       const quizId = req.query?.quizId;
       const result = await postStart(quizId);
+      res.json(result);
+    } catch (error) {
+      console.error('Error while starting quiz', error);
+      res.status(500).json({ error });
+    }
+  });
+
+  console.log('📨  Adding PUT answer route...');
+	apiRouter.put('/answer', async(req: Request, res: Response) => {
+    try {
+      const roundId = req.query?.roundId;
+      const questionNumber = req.query?.questionNumber;
+      const correct = req.query?.correct;
+      const result = await putAnswer(roundId, questionNumber, correct);
       res.json(result);
     } catch (error) {
       console.error('Error while starting quiz', error);

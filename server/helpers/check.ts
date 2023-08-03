@@ -5,3 +5,7 @@ export type QueryParams = string | QueryString.ParsedQs | string[] | QueryString
 export function isNumberString (str: QueryParams) {
   return typeof str === 'string' && !isNaN(parseInt(str));
 }
+
+export function isBooleanString (str: QueryParams) {
+  return typeof str === 'string' && (str === 'true' || 'false');
+}
