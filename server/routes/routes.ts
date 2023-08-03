@@ -1,5 +1,5 @@
 import express, { Express, Request, Response } from "express";
-import { queryDatabase } from "../db";
+import { getCategory, getQuiz, getSubcategory } from "../services/get_information";
 
 export function addAPIRoutes(app: Express) {
 	console.log('🛠️  Creating API router...');
@@ -13,7 +13,7 @@ export function addAPIRoutes(app: Express) {
 	console.log('📨  Adding GET category route...');
 	apiRouter.get('/category', async(req: Request, res: Response) => {
     try {
-      const result = await queryDatabase('SELECT id, name FROM category');
+      const result = await getCategory();
       res.json(result);
     } catch (error) {
       console.error('Error while getting categories', error);
@@ -25,9 +25,7 @@ export function addAPIRoutes(app: Express) {
 	apiRouter.get('/subcategory', async(req: Request, res: Response) => {
     try {
       const categoryId = req.query?.categoryId;
-      const condition: string = categoryId ? ' WHERE category_id = ' + categoryId : '';
-
-      const result = await queryDatabase('SELECT id, name FROM subcategory' + condition);
+      const result = await getSubcategory(categoryId) ;
       res.json(result);
     } catch (error) {
       console.error('Error while getting subcategories', error);
@@ -39,16 +37,8 @@ export function addAPIRoutes(app: Express) {
 	apiRouter.get('/quiz', async(req: Request, res: Response) => {
     try {
       const categoryId = req.query?.categoryId;
-      const condition: string = categoryId ? ' WHERE category_id = ' + categoryId : '';
-
-      let numberOfReturns = req.query?.numberOfReturns;
-
-      if (typeof numberOfReturns !== 'string' || isNaN(parseInt(numberOfReturns)))
-        numberOfReturns = '1';
-
-      const limit: string =  ' LIMIT ' + numberOfReturns;
-
-      const result = await queryDatabase('SELECT id, name FROM quiz' + condition + ' ORDER BY RANDOM()' + limit);
+      const limit = req.query?.numberOfReturns;
+      const result = await getQuiz(categoryId, limit);
       res.json(result);
     } catch (error) {
       console.error('Error while getting quizzes', error);
