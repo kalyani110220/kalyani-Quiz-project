@@ -16,7 +16,7 @@ export function addAPIRoutes(app: Express) {
 	apiRouter.get('/category', async(req: Request, res: Response) => {
     try {
       const result = await getCategory();
-      res.json(result);
+      res.status(200).json(result);
     } catch (error) {
       console.error('Error while getting categories', error);
       res.status(500).json({ error });
@@ -28,7 +28,7 @@ export function addAPIRoutes(app: Express) {
     try {
       const categoryId = req.query?.categoryId;
       const result = await getSubcategory(categoryId) ;
-      res.json(result);
+      res.status(200).json(result);
     } catch (error) {
       console.error('Error while getting subcategories', error);
       res.status(500).json({ error });
@@ -41,7 +41,7 @@ export function addAPIRoutes(app: Express) {
       const categoryId = req.query?.categoryId;
       const limit = req.query?.numberOfReturns;
       const result = await getQuiz(categoryId, limit);
-      res.json(result);
+      res.status(200).json(result);
     } catch (error) {
       console.error('Error while getting quizzes', error);
       res.status(500).json({ error });
@@ -54,7 +54,7 @@ export function addAPIRoutes(app: Express) {
       const quizId = req.query?.quizId;
       const questionNumber = req.query?.questionNumber;
       const result = await getQuestion(quizId, questionNumber);
-      res.json(result);
+      res.status(200).json(result);
     } catch (error) {
       console.error('Error while getting quizzes', error);
       res.status(500).json({ error });
@@ -66,7 +66,7 @@ export function addAPIRoutes(app: Express) {
     try {
       const quizId = req.query?.quizId;
       const result = await postStart(quizId);
-      res.json(result);
+      res.status(201).json(result);
     } catch (error) {
       console.error('Error while starting quiz', error);
       res.status(500).json({ error });
@@ -80,9 +80,9 @@ export function addAPIRoutes(app: Express) {
       const questionNumber = req.query?.questionNumber;
       const correct = req.query?.correct;
       const result = await putAnswer(roundId, questionNumber, correct);
-      res.json(result);
+      res.status(201).json(result);
     } catch (error) {
-      console.error('Error while starting quiz', error);
+      console.error('Error while submitting answer', error);
       res.status(500).json({ error });
     }
   });
