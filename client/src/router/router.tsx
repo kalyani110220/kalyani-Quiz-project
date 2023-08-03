@@ -14,6 +14,7 @@ export const QuizAppRouter: React.FC = () => (
   <Routes>
     <Route path="/" element={<MainLayout />}>
       <Route index element={<Home />} />
+      <Route path="home" element={<Home />} />
       <Route path="category" element={<Category />} />
       <Route path="health" element={<Health />} />
       <Route path="help" element={<Help />} />
