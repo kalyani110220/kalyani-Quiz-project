@@ -1,5 +1,5 @@
 import express, { Express, Request, Response } from "express";
-import { getCategory, getQuiz, getSubcategory } from "../services/get_information";
+import { getCategory, getQuestion, getQuiz, getSubcategory } from "../services/get_information";
 
 export function addAPIRoutes(app: Express) {
 	console.log('🛠️  Creating API router...');
@@ -39,6 +39,19 @@ export function addAPIRoutes(app: Express) {
       const categoryId = req.query?.categoryId;
       const limit = req.query?.numberOfReturns;
       const result = await getQuiz(categoryId, limit);
+      res.json(result);
+    } catch (error) {
+      console.error('Error while getting quizzes', error);
+      res.status(500).json({ error: 'Internal server error' });
+    }
+  });
+
+  console.log('📨  Adding GET question route...');
+	apiRouter.get('/question', async(req: Request, res: Response) => {
+    try {
+      const quizId = req.query?.quizId;
+      const questionNumber = req.query?.questionNumber;
+      const result = await getQuestion(quizId, questionNumber);
       res.json(result);
     } catch (error) {
       console.error('Error while getting quizzes', error);
