@@ -7,5 +7,5 @@ export function isNumberString (str: QueryParams) {
 }
 
 export function isBooleanString (str: QueryParams) {
-  return typeof str === 'string' && (str === 'true' || 'false');
+  return typeof str === 'string' && (str === 'true' || str === 'false');
 }

@@ -26,9 +26,6 @@ export async function getQuiz (categoryId: QueryParams, limit: QueryParams) {
 }
 
 export async function getQuestion (quizId: QueryParams, questionNumber: QueryParams) {
-  if (!isNumberString(quizId)) throw new Error('Must contain quizId and it must be a number');
-  if (!isNumberString(questionNumber)) throw new Error('Must contain questionNumber and it must be a number');
-
   const questionAnswerQuery : string = `SELECT qu.id AS id, qu.text AS "questionText", a.id AS "answerId", a.text AS 
                                 answer, qqr.multiple_choice as "multipleChoice" FROM quiz_question_relation AS qqr 
                                 JOIN question AS qu ON qqr.question_id = qu.id JOIN answer AS a ON qu.answer_id = a.id 
