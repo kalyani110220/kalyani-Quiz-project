@@ -1,5 +1,6 @@
 import express, { Express, Request, Response } from "express";
 import { getCategory, getQuestion, getQuiz, getSubcategory } from "../services/get_information";
+import { postStart } from "../services/post_information";
 
 export function addAPIRoutes(app: Express) {
 	console.log('🛠️  Creating API router...');
@@ -17,7 +18,7 @@ export function addAPIRoutes(app: Express) {
       res.json(result);
     } catch (error) {
       console.error('Error while getting categories', error);
-      res.status(500).json({ error: 'Internal server error' });
+      res.status(500).json({ error });
     }
   });
 
@@ -29,7 +30,7 @@ export function addAPIRoutes(app: Express) {
       res.json(result);
     } catch (error) {
       console.error('Error while getting subcategories', error);
-      res.status(500).json({ error: 'Internal server error' });
+      res.status(500).json({ error });
     }
   });
 
@@ -42,7 +43,7 @@ export function addAPIRoutes(app: Express) {
       res.json(result);
     } catch (error) {
       console.error('Error while getting quizzes', error);
-      res.status(500).json({ error: 'Internal server error' });
+      res.status(500).json({ error });
     }
   });
 
@@ -55,7 +56,19 @@ export function addAPIRoutes(app: Express) {
       res.json(result);
     } catch (error) {
       console.error('Error while getting quizzes', error);
-      res.status(500).json({ error: 'Internal server error' });
+      res.status(500).json({ error });
+    }
+  });
+
+  console.log('📨  Adding POST start route...');
+	apiRouter.post('/start', async(req: Request, res: Response) => {
+    try {
+      const quizId = req.query?.quizId;
+      const result = await postStart(quizId);
+      res.json(result);
+    } catch (error) {
+      console.error('Error while starting quiz', error);
+      res.status(500).json({ error });
     }
   });
 
