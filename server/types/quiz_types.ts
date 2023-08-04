@@ -25,3 +25,9 @@ export type Subcategory = {
   id: `${number}`,
   name: string
 }
+
+export type Result = {
+  answered: number,
+  correct: number,
+  questionCount: number
+}
