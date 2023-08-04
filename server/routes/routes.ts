@@ -1,5 +1,5 @@
 import express, { Express, Request, Response } from "express";
-import { getCategory, getQuestion, getQuiz, getSubcategory } from "../services/get_information";
+import { getCategory, getQuestion, getQuiz, getResult, getSubcategory } from "../services/get_information";
 import { postStart } from "../services/post_information";
 import { putAnswer } from "../services/put_information";
 import { isBooleanString, isNumberString } from "../helpers/check";
@@ -59,6 +59,22 @@ export function addAPIRoutes(app: Express) {
       else if (!isNumberString(questionNumber)) res.status(400).json({ error : 'Must contain questionNumber and it must be a number' });
       else {
         const result = await getQuestion(quizId, questionNumber);
+        res.status(200).json(result);
+      }
+    } catch (error) {
+      console.error('Error while getting quizzes', error);
+      res.status(500).json({ error });
+    }
+  });
+
+  console.log('📨  Adding GET result route...');
+	apiRouter.get('/result', async(req: Request, res: Response) => {
+    try {
+      const roundId = req.query?.roundId;
+
+      if (!isNumberString(roundId)) res.status(400).json({ error : 'Must contain roundId and it must be a number' });
+      else {
+        const result = await getResult(roundId);
         res.status(200).json(result);
       }
     } catch (error) {
